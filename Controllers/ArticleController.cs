@@ -6,7 +6,7 @@ using mongodb_example.Interface;
 namespace mongodb_example.Controllers;
 
 [ApiController]
-[Route("article")]
+[Route("articles")]
 public class ArticleController : ControllerBase
 {
     private readonly IArticleService _articleService;
@@ -22,9 +22,9 @@ public class ArticleController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("id")]
-    public async Task<ActionResult> GetById(string id) {
-        var result = await _articleService.GetById(id);
+    [HttpGet("{articleId}")]
+    public async Task<ActionResult> GetById(string articleId) {
+        var result = await _articleService.GetById(articleId);
 
         if (result == null)
             return NotFound();
@@ -39,9 +39,9 @@ public class ArticleController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = request.id }, request);
     }
 
-    [HttpPut("id")]
-    public async Task<ActionResult> Update(string id, [FromBody]Article request) {
-        var result = await _articleService.Update(id, request);
+    [HttpPut("{articleId}")]
+    public async Task<ActionResult> Update(string articleId, [FromBody]Article request) {
+        var result = await _articleService.Update(articleId, request);
         
         if (result == null)
             return NotFound();
@@ -49,9 +49,9 @@ public class ArticleController : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete("id")]
-    public async Task<ActionResult> Delete(string id) {
-        await _articleService.Delete(id);
+    [HttpDelete("{articleId}")]
+    public async Task<ActionResult> Delete(string articleId) {
+        await _articleService.Delete(articleId);
         
         return NoContent();
     }

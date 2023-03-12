@@ -16,6 +16,8 @@ builder.Services.ConfigureOptions<MongoDBoptionsSetup>();
 
 builder.Services.AddSingleton<MongoDBContext>();
 builder.Services.AddSingleton<IArticleService, ArticleService>();
+builder.Services.AddSingleton<ICommentService, CommentService>();
+builder.Services.AddSingleton<IReplyService, ReplyService>();
 
 var app = builder.Build();
 

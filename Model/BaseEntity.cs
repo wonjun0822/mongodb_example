@@ -7,5 +7,5 @@ public abstract class BaseEntity
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? id { get; private set; }
+    public string? id { get; protected set; } = ObjectId.GenerateNewId().ToString();
 }
