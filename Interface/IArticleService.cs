@@ -5,9 +5,9 @@ namespace mongodb_example.Interface;
 
 public interface IArticleService
 {
-    Task<List<ArticleDTO>> GetAll();
-    Task<Article> GetById(string id);
-    Task Create(Article request);
-    Task<Article> Update(string id, Article request);
+    Task<List<ArticleListDTO>> GetAll();
+    Task<ArticleDetailDTO> GetById(string id);
+    Task<ArticleDetailDTO> Create(ArticleWriteDTO request);
+    Task<ArticleDetailDTO> Update(string id, ArticleWriteDTO request);
     Task Delete(string id);
 }

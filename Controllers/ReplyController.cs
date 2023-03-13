@@ -22,6 +22,13 @@ public class ReplyController : ControllerBase
         return CreatedAtAction("Get", "Comment", new { articleId }, result);
     }
 
+    [HttpPut("{articleId}/comments/{commentId}/replys/{replyId}")]
+    public async Task<ActionResult> Create(string articleId, string commentId, string replyId, Reply request) {
+        var result = await _replyService.Update(articleId, commentId, replyId, request);
+
+        return Ok(result);
+    }
+
     [HttpDelete("{articleId}/comments/{commentId}/replys/{replyId}")]
     public async Task<ActionResult> Delete(string articleId, string commentId, string replyId) {
         await _replyService.Delete(articleId, commentId, replyId);

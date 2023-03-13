@@ -40,6 +40,33 @@ public class ReplyService : IReplyService
         return reply;
     }
 
+    public async Task<Reply> Update(string articleId, string commentId, string replyId, Reply request)
+    {
+        var filter = Builders<Article>.Filter.And(
+            Builders<Article>.Filter.Eq(x => x.id, articleId),
+            Builders<Article>.Filter.ElemMatch(x => x.comments, Builders<Comment>.Filter.ElemMatch(x => x.replys, x => x.id == replyId))
+        );
+
+        var update = Builders<Article>.Update.Set("comments.$[c].replys.$[r].comment", request.comment);
+
+        var arrayFilter = new List<ArrayFilterDefinition> {
+            new BsonDocumentArrayFilterDefinition<Comment>(new BsonDocument("c._id", new ObjectId(commentId))),
+            new BsonDocumentArrayFilterDefinition<Reply>(new BsonDocument("r._id", new ObjectId(replyId)))
+        };
+
+        var result = await _collection.FindOneAndUpdateAsync(
+            filter,
+            update,
+            options: new FindOneAndUpdateOptions<Article, Article>
+            {
+                ArrayFilters = arrayFilter,
+                ReturnDocument = ReturnDocument.After
+            }
+        );
+
+        return result.comments.Select(x => x.replys.Where(s => s.id == replyId).FirstOrDefault()).FirstOrDefault()!;
+    }
+
     public async Task Delete(string articleId, string commentId, string replyId)
     {
         var filter = Builders<Article>.Filter.And(

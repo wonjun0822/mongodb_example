@@ -40,6 +40,27 @@ public class CommentService : ICommentService
         return comment;
     }
 
+    public async Task<Comment> Update(string articleId, string commentId, Comment request)
+    {
+        var filter = Builders<Article>.Filter.And(
+            Builders<Article>.Filter.Eq(x => x.id, articleId),
+            Builders<Article>.Filter.ElemMatch(x => x.comments, x => x.id == commentId)
+        );
+
+        var update = Builders<Article>.Update.Set("comments.$.comment", request.comment);
+
+        var result = await _collection.FindOneAndUpdateAsync(
+            filter,
+            update,
+            options: new FindOneAndUpdateOptions<Article, Article>
+            {
+                ReturnDocument = ReturnDocument.After
+            }
+        );
+
+        return result.comments.FirstOrDefault(x => x.id == commentId)!;
+    }
+
     public async Task Delete(string articleId, string commentId)
     {
         var filter = Builders<Article>.Filter.And(
